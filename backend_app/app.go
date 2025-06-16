@@ -23,13 +23,19 @@ func headers(w http.ResponseWriter, req *http.Request) {
     }
 }
 
+func enableCors(w *http.ResponseWriter) {
+    (*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func orderHandler (w http.ResponseWriter, req *http.Request) {
+    enableCors(&w)
     order_id := req.PathValue("id")
     //Ask the API
     response, err := apiStatusCheck(order_id)
     if err != nil {
       fmt.Fprintf(w, "An error occured while processing request: %s", err)
     } else {
+        // TODO: Check if Data is empty. In that case return message.
         fmt.Fprintf(w, "Message: %s\n", response.Message)
         fmt.Fprintf(w, "Data:\n") 
         for key, val := range response.Data {
